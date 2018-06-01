@@ -178,6 +178,7 @@ bool MsckfVio::loadParameters() {
 
 bool MsckfVio::createRosIO() {
   odom_pub = nh.advertise<nav_msgs::Odometry>("odom", 10);
+  tform_pub = nh.advertise<geometry_msgs::Transform>("tform", 10);
   feature_pub = nh.advertise<sensor_msgs::PointCloud2>(
       "feature_point_cloud", 10);
 
@@ -1420,6 +1421,13 @@ void MsckfVio::publish(const ros::Time& time) {
       odom_msg.twist.covariance[i*6+j] = P_body_vel(i, j);
 
   odom_pub.publish(odom_msg);
+
+  geometry_msgs::Transform tform_msg;
+  tform_msg.header = odom_msg.header;
+  tform_msg.translation = odom_msg.pose.pose.position;
+  tform_msg.rotation = odom_msg.pose.pose.orientation;
+
+  tform_pub.publish(tform_msg);
 
   // Publish the 3D positions of the features that
   // has been initialized.

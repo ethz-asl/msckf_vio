@@ -207,6 +207,7 @@ class MsckfVio {
     // Subscribers and publishers
     ros::Subscriber imu_sub;
     ros::Subscriber feature_sub;
+    ros::Publisher tform_pub;
     ros::Publisher odom_pub;
     ros::Publisher feature_pub;
     tf::TransformBroadcaster tf_pub;
