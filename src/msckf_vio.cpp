@@ -178,7 +178,7 @@ bool MsckfVio::loadParameters() {
 
 bool MsckfVio::createRosIO() {
   odom_pub = nh.advertise<nav_msgs::Odometry>("odom", 10);
-  tform_pub = nh.advertise<geometry_msgs::Transform>("tform", 10);
+  tform_pub = nh.advertise<geometry_msgs::TransformStamped>("tform", 10);
   feature_pub = nh.advertise<sensor_msgs::PointCloud2>(
       "feature_point_cloud", 10);
 
@@ -1422,10 +1422,12 @@ void MsckfVio::publish(const ros::Time& time) {
 
   odom_pub.publish(odom_msg);
 
-  geometry_msgs::Transform tform_msg;
+  geometry_msgs::TransformStamped tform_msg;
   tform_msg.header = odom_msg.header;
-  tform_msg.translation = odom_msg.pose.pose.position;
-  tform_msg.rotation = odom_msg.pose.pose.orientation;
+  tform_msg.transform.translation.x = odom_msg.pose.pose.position.x;
+  tform_msg.transform.translation.y = odom_msg.pose.pose.position.y;
+  tform_msg.transform.translation.z = odom_msg.pose.pose.position.z;
+  tform_msg.transform.rotation = odom_msg.pose.pose.orientation;
 
   tform_pub.publish(tform_msg);
 
